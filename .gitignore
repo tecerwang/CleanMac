@@ -1,0 +1,32 @@
+build/
+DerivedData/
+*.app/
+.DS_Store
+.tmp-icon/
+
+# Local Xcode state and signing material
+xcuserdata/
+*.xcuserstate
+*.p12
+*.p8
+*.mobileprovision
+.env
+.env.*
+!.env.example
+
+# Disk snapshots, generated Agent handoffs, and cleanup audit data
+scan-cache.plist
+CacheBackups/
+CleanMac-Overviews/
+Overviews/
+CleanupAudits/
+entries.jsonl
+findings.jsonl
+agent-prompt.txt
+latest-analysis.json
+cleanup-recommendations.md
+proposals.json
+
+# Private machine-specific verification records (keep locally)
+Docs/ReleaseValidation-2026-10-22.md
+Docs/FullScanValidation-2026-10-22.md

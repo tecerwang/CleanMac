@@ -13,5 +13,6 @@ struct CleanMacApp: App {
         WindowGroup {
             ContentView()
         }
+        .defaultSize(width: 1_050, height: 700)
     }
 }
