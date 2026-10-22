@@ -93,6 +93,7 @@ nonisolated struct OverviewArtifact: Identifiable, Sendable {
     let manifest: OverviewManifest
     var analysis: OverviewAnalysis?
     var preview: [OverviewFinding] = []
+    var cliExecutablePath: String? = nil
 }
 
 nonisolated struct OverviewAudit: Codable, Sendable {

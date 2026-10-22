@@ -6,19 +6,53 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C11A0000000000000000000D /* cleanmac in Helpers */ = {isa = PBXBuildFile; fileRef = C11A00000000000000000001 /* cleanmac */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		C11A0000000000000000000F /* CLI.md in Resources */ = {isa = PBXBuildFile; fileRef = C11A0000000000000000000E /* CLI.md */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		C11A0000000000000000000A = {isa = PBXContainerItemProxy; containerPortal = 809A88283029EABB00B8C8EA; proxyType = 1; remoteGlobalIDString = C11A00000000000000000004; remoteInfo = CleanMacCLI; };
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C11A0000000000000000000C /* Embed CLI */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Helpers;
+			dstSubfolderSpec = 1;
+			files = (C11A0000000000000000000D /* cleanmac in Helpers */, );
+			name = "Embed CLI";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		C11A00000000000000000001 /* cleanmac */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; path = cleanmac; sourceTree = BUILT_PRODUCTS_DIR; };
+		C11A0000000000000000000E /* CLI.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Docs/CLI.md; sourceTree = SOURCE_ROOT; };
 		809A88303029EABB00B8C8EA /* CleanMac.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CleanMac.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		C11A00000000000000000003 = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (Assets.xcassets, CleanMacApp.swift, Resources, ViewModel, Views, );
+			target = C11A00000000000000000004 /* cleanmac */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		809A88323029EABB00B8C8EA /* CleanMac */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = CleanMac;
+			exceptions = (C11A00000000000000000003, );
 			sourceTree = "<group>";
 		};
+		C11A00000000000000000002 /* CLI */ = {isa = PBXFileSystemSynchronizedRootGroup; path = CLI; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		C11A00000000000000000006 = {isa = PBXFrameworksBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 		809A882D3029EABB00B8C8EA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -33,6 +67,8 @@
 			isa = PBXGroup;
 			children = (
 				809A88323029EABB00B8C8EA /* CleanMac */,
+				C11A00000000000000000002 /* CLI */,
+				C11A0000000000000000000E /* CLI.md */,
 				809A88313029EABB00B8C8EA /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +77,7 @@
 			isa = PBXGroup;
 			children = (
 				809A88303029EABB00B8C8EA /* CleanMac.app */,
+				C11A00000000000000000001 /* cleanmac */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -55,10 +92,12 @@
 				809A882C3029EABB00B8C8EA /* Sources */,
 				809A882D3029EABB00B8C8EA /* Frameworks */,
 				809A882E3029EABB00B8C8EA /* Resources */,
+				C11A0000000000000000000C /* Embed CLI */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				C11A0000000000000000000B,
 			);
 			fileSystemSynchronizedGroups = (
 				809A88323029EABB00B8C8EA /* CleanMac */,
@@ -69,6 +108,19 @@
 			productName = CleanMac;
 			productReference = 809A88303029EABB00B8C8EA /* CleanMac.app */;
 			productType = "com.apple.product-type.application";
+		};
+		C11A00000000000000000004 /* cleanmac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C11A00000000000000000007;
+			buildPhases = (C11A00000000000000000005, C11A00000000000000000006, );
+			buildRules = ();
+			dependencies = ();
+			fileSystemSynchronizedGroups = (809A88323029EABB00B8C8EA, C11A00000000000000000002, );
+			name = CleanMacCLI;
+			packageProductDependencies = ();
+			productName = cleanmac;
+			productReference = C11A00000000000000000001;
+			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -100,6 +152,7 @@
 			projectRoot = "";
 			targets = (
 				809A882F3029EABB00B8C8EA /* CleanMac */,
+				C11A00000000000000000004 /* cleanmac */,
 			);
 		};
 /* End PBXProject section */
@@ -109,12 +162,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C11A0000000000000000000F /* CLI.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		C11A00000000000000000005 = {isa = PBXSourcesBuildPhase; buildActionMask = 2147483647; files = (); runOnlyForDeploymentPostprocessing = 0; };
 		809A882C3029EABB00B8C8EA /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -124,7 +179,13 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		C11A0000000000000000000B = {isa = PBXTargetDependency; target = C11A00000000000000000004; targetProxy = C11A0000000000000000000A; };
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		C11A00000000000000000008 /* Debug */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_STYLE = Automatic; PRODUCT_NAME = cleanmac; SKIP_INSTALL = YES; SWIFT_MODULE_NAME = CleanMacCLI; SWIFT_VERSION = 5.0; }; name = Debug; };
+		C11A00000000000000000009 /* Release */ = {isa = XCBuildConfiguration; buildSettings = {CODE_SIGN_STYLE = Automatic; PRODUCT_NAME = cleanmac; SKIP_INSTALL = YES; SWIFT_MODULE_NAME = CleanMacCLI; SWIFT_VERSION = 5.0; }; name = Release; };
 		809A88393029EABC00B8C8EA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -304,6 +365,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		C11A00000000000000000007 = {isa = XCConfigurationList; buildConfigurations = (C11A00000000000000000008, C11A00000000000000000009, ); defaultConfigurationIsVisible = 0; defaultConfigurationName = Release; };
 		809A882B3029EABB00B8C8EA /* Build configuration list for PBXProject "CleanMac" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

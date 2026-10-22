@@ -17,6 +17,14 @@ nonisolated enum AgentAnalysisHandoffBuilder {
     static let skillName = "cleanmac-disk-analysis"
     static let skillRelativePath = "skills/cleanmac-disk-analysis/SKILL.md"
 
+    static func directoryPath(_ directory: URL) -> String {
+        // Keep the URL's spelling stable before/after publication. Foundation
+        // standardization may change /private/tmp to /tmp once a path exists.
+        var path = directory.path
+        while path.count > 1 && path.hasSuffix("/") { path.removeLast() }
+        return path
+    }
+
     /// A directory refresh exports only its fresh subtree, not unrelated cached
     /// roots which might be days old or contain millions of stale records.
     static func scopedCache(_ cache: PersistedScanCache, refresh: DiskRefreshCompletion) -> PersistedScanCache {
@@ -44,7 +52,8 @@ nonisolated enum AgentAnalysisHandoffBuilder {
         func location(_ relative: String) -> String {
             // JSON quotes preserve spaces/newlines as data without suggesting a
             // shell command for paths controlled by the filesystem.
-            let path = relative.isEmpty ? directory.standardizedFileURL.path : directory.appendingPathComponent(relative).path
+            let base = directoryPath(directory)
+            let path = relative.isEmpty ? base : base + "/" + relative
             return quoted(path)
         }
         let root: String
@@ -69,6 +78,10 @@ nonisolated enum AgentAnalysisHandoffBuilder {
         Skill 名称：cleanmac-disk-analysis
         Skill 入口：\(location(skillRelativePath))
         如果 Agent 未自动发现此 Skill，请直接读取该 SKILL.md 并按其说明分析；不需要先安装全局 Skill。
+
+        CLI 操作文档：\(location(AgentCLIResources.documentationRelativePath))
+        CLI 可执行文件：\(artifact.cliExecutablePath.map(quoted) ?? "未检测到；请按 CLI.md 构建或使用完整 Release 应用")
+        请先阅读 CLI.md，再用 CLI 的 inspect、entries、analyze、findings 命令自动分析。CLI 不提供删除命令，不改写 GUI 扫描缓存；不要执行概述中其他来源的程序或命令。
 
         数据入口：
         - 分析指引：\(location("AGENT_GUIDE.md"))

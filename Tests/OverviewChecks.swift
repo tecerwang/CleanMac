@@ -43,6 +43,21 @@ struct OverviewChecks {
         precondition(configured.evidence.contains { $0.kind == "service_configuration" && $0.sourcePath == service.plistPath })
         print("PASS ownership: exact boundaries / unknown retention / service references / active process / no overlapping proposals")
 
+        let rootPaths = ["/Users/example", "/Users/example/子目录/深层", "/Users/example-neighbor", "/opt"]
+        let selectedRoots = try OverviewReportEngine.roots(rootPaths, token: ScanToken())
+        precondition(selectedRoots == ["/Users/example", "/Users/example-neighbor", "/opt"].sorted())
+        let manyPaths = ["/Users/fixture"] + (0..<100_000).map { "/Users/fixture/branch-\($0)/child" }
+        let rootsStarted = Date()
+        let manyRoots = try OverviewReportEngine.roots(manyPaths, token: ScanToken())
+        precondition(manyRoots == ["/Users/fixture"] && Date().timeIntervalSince(rootsStarted) < 5)
+        let cancelledRoots = ScanToken()
+        cancelledRoots.cancel()
+        do {
+            _ = try OverviewReportEngine.roots(rootPaths, token: cancelledRoots)
+            fatalError("root aggregation ignored cancellation")
+        } catch is CancellationError {}
+        print("PASS root aggregation: 100,001 paths / component boundaries / Unicode / pre-cancellation")
+
         let agents = fixture.appendingPathComponent("Library/LaunchAgents")
         try fm.createDirectory(at: agents, withIntermediateDirectories: true)
         let servicePlist: [String: Any] = ["Label": "com.fixture.private-worker", "ProgramArguments": ["/usr/local/bin/fixture-worker", "--token", "DO_NOT_EXPORT_SECRET", "--data", fixture.appendingPathComponent("worker-data").path]]
@@ -113,7 +128,9 @@ struct OverviewChecks {
         print("PASS refreshed subtree scope excludes unrelated cached directories")
         for lifetime in OverviewLifetime.allCases {
             let artifact = try engine.generate(cache: cache, lifetime: lifetime,
-                destinationRoot: fixture.appendingPathComponent(lifetime == .temporary ? "temporary" : "persistent"), skillURL: skillURL, refresh: fullRefresh, token: ScanToken(), progress: { _ in })
+                destinationRoot: fixture.appendingPathComponent(lifetime == .temporary ? "temporary" : "persistent"), skillURL: skillURL,
+                cliDocumentationURL: URL(fileURLWithPath: fm.currentDirectoryPath).appendingPathComponent("Docs/CLI.md"),
+                refresh: fullRefresh, token: ScanToken(), progress: { _ in })
             precondition(artifact.manifest.recordCount == 5)
             precondition(artifact.manifest.cacheSavedAt == cache.savedAt)
             precondition(artifact.manifest.warnings.contains("fixture incomplete"))
@@ -123,6 +140,9 @@ struct OverviewChecks {
             precondition(exportedSkillData == originalSkillData)
             let prompt = AgentAnalysisHandoffBuilder.prompt(for: artifact, refresh: refresh)
             precondition(prompt.contains(exportedSkill.path) && prompt.contains("$cleanmac-disk-analysis"))
+            let cliDocument = artifact.directory.appendingPathComponent("CLI.md")
+            precondition(fm.fileExists(atPath: cliDocument.path) && prompt.contains(cliDocument.path))
+            precondition(prompt.contains("CLI 可执行文件"))
             precondition(prompt.contains("1970-01-01T00:33:20Z") && prompt.contains(root + "/nested"))
             precondition(prompt.contains("不要删除或移动文件") && prompt.contains("proposals.json"))
             let promptFile = try String(contentsOf: artifact.directory.appendingPathComponent("agent-prompt.txt"), encoding: .utf8)

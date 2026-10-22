@@ -8,7 +8,7 @@
 
 - “全面分析”覆盖应用配置的六个根目录，不代表覆盖所有挂载卷；无法读取的内容会提示，符号链接可能不收录。
 - 大规模扫描仍可能占用较多内存，结果发布时也可能出现短时响应延迟；百万级合成数据回归不等同于真实全盘扫描的内存和帧时间保证。
-- 概述根目录清单汇总阶段可能耗时较长，仍存在延迟响应取消的风险。缓存提交阶段不提供取消。
+- 概述根目录清单汇总采用纯路径计算并检查取消；系统 I/O、缓存编解码及排序等单次操作仍可能需要等待。GUI 缓存提交阶段不提供取消。
 - 清理建议不是删除授权。请先核实用途和可重建性，并保留必要备份。
 
 ## 构建产物保留规则
@@ -41,6 +41,24 @@ xcodebuild -project CleanMac.xcodeproj -scheme CleanMac \
 “全面分析”或文件系统目录刷新成功后，会自动生成一份临时概述，并弹出“刷新完成，复制给 Agent 分析”文本框。文本可编辑；点击“复制到剪贴板”后，将当前文本写入 macOS 系统剪贴板，再粘贴到可访问本机文件的 Agent 对话框。
 
 文本包含临时概述目录、刷新范围与时间、真实数据文件路径、`cleanmac-disk-analysis` Skill 的完整路径，以及“仅生成建议，不删除”的请求。Skill 随应用打包并复制到每份概述的 `skills/cleanmac-disk-analysis/SKILL.md`，无需另行全局安装。初始交接文本也保存在概述目录的 `agent-prompt.txt`。
+
+复制文本同时包含 **CLI 操作文档 `CLI.md` 的绝对路径**和随应用打包的 `cleanmac` 可执行文件绝对路径。每份新概述附带该文档，Agent 无需点击 GUI 即可按文档自动查询、分析或创建新概述。完整接口见 [CLI.md](Docs/CLI.md)。
+
+## CLI 自动化
+
+Release 构建同时输出 `build/Build/Products/Release/cleanmac`，并将 CLI 打包进 `CleanMac.app/Contents/Helpers/cleanmac`。
+
+```sh
+build/Build/Products/Release/cleanmac capabilities
+build/Build/Products/Release/cleanmac inspect --overview "/absolute/path/to/overview"
+build/Build/Products/Release/cleanmac entries --overview "/absolute/path/to/overview" --limit 100
+```
+
+提供 scan、export、inspect、entries、analyze、findings 命令，stdout 为单个 JSON 对象，进度写入 stderr；支持 SIGINT/SIGTERM 协作取消。不提供删除入口，不改写 GUI 缓存；scan/export 新建概述包，analyze 仅在指定概述内新增分析。复制文本指向的是本次概述中的文档副本，旧概述不会被自动改写或补齐。
+
+CLI 集成回归：`zsh Tests/run-cli-checks.sh`。测试使用实际 Release CLI 与独立夹具，覆盖带空格/引号/换行的路径、分页边界、缓存只读导出、分析指针越界拒绝、独立资源定位和真实子进程取消；测试数据保留，不删除已有用户文件。
+
+## 概述操作说明
 
 目录刷新只导出刚更新的子树；全面分析导出本次扫描覆盖的全部范围。应用启动时恢复缓存、展开已有目录、查询开发库不会弹出该对话框。取消扫描不会生成新交接；概述生成失败时保留刷新结果并显示可重试的错误，不提供虚假的文件地址。生成临时概述期间显示进度，可取消。
 

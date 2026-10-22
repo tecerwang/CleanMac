@@ -11,6 +11,6 @@ xcrun swiftc -O -sdk "$SDK_PATH" \
   CleanMac/Engine/OverviewAttribution.swift CleanMac/Engine/OverviewReportEngine.swift \
   CleanMac/Support/ScanToken.swift CleanMac/Support/CleanMacFormat.swift \
   CleanMac/Support/CleanMacPath.swift CleanMac/Support/ScanCacheStore.swift \
-  CleanMac/Support/AgentAnalysisHandoff.swift Tests/OverviewChecks.swift \
+  CleanMac/Support/AgentAnalysisHandoff.swift CleanMac/Support/AgentCLIResources.swift Tests/OverviewChecks.swift \
   -o "$CHECK_DIR/Release/OverviewChecks"
 "$CHECK_DIR/Release/OverviewChecks"
